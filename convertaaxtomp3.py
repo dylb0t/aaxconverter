@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import os
 import re
 import subprocess as sp
@@ -36,14 +36,14 @@ def getChapters():
   if not options.infile:
     parser.error('Filename required')
   chapters = parseChapters(options.infile)
-  fbase, fext = os.path.splitext(options.infile)
+  fbase = os.path.basename(options.infile).split(".")[0]
+  #print(fbase)
   os.mkdir(fbase)
   for chap in chapters:
-    print("start:" +  chap['start'])
-    chapterName = chap['name']
+    #print("start:" +  chap['start'])
     chap['outfile'] = f"./{fbase}/{fbase}-ch-{chap['name'].split(':')[1]}.mp3"
     chap['origfile'] = options.infile
-    print (chap['outfile'])
+    #print (chap['outfile'])
   return chapters
 
 def convertChapters(chapters):
@@ -51,7 +51,9 @@ def convertChapters(chapters):
     print ("start:" +  chap['start'])
     print (chap)
     #ffmpeg -i TheChoiceofMagicArtoftheAdeptBook1.m4b -c:v copy -c:a libmp3lame -q:a 4 TheChoiceofMagicArtoftheAdeptBook1.mp3
-    activation = os.open("./activation", 'r')
+    filehandle = open('./activation','r')
+    activation = filehandle.read(8)
+    filehandle.close()
     command = [
         "ffmpeg", 
         '-activation_bytes', activation,
